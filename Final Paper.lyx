@@ -1,0 +1,2409 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass IEEEtran
+\begin_preamble
+% for subfigures/subtables
+\ifCLASSOPTIONcompsoc
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\else
+\usepackage[caption=false,font=footnotesize]{subfig}
+\fi
+\end_preamble
+\options conference
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding default
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command bibtex
+\index_command default
+\float_placement tbh
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_title "Your Title"
+\pdf_author "Your Name"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen true
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle false
+\pdf_quoted_options "pdfpagelayout=OneColumn, pdfnewwindow=true, pdfstartview=XYZ, plainpages=false"
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 0
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type numerical
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 2
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Towards a New Paradigm for Ultrafast Transmission Line Relaying
+\end_layout
+
+\begin_layout Author
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+IEEEauthorblockN{
+\end_layout
+
+\end_inset
+
+Ahmad Abdullah
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\backslash
+IEEEauthorblockA{Electric Power Engineers, Inc
+\backslash
+
+\backslash
+ Austin, TX 78738
+\backslash
+
+\backslash
+ Email: habdullah@epeconsulting.com}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+Digital impedance protection of transmission lines suffers from known shortcomin
+gs not only as a principle but also as an application as well.
+ This necessitates developing a new relaying principle that overcomes those
+ shortcomings.
+ Such a principle is offered in this paper and is currently being validated
+ using field data.
+ The principle is a new application of wavelet based neural networks.
+ The application uses high frequency content of a subset of local currents
+ of one end of a protected line to classify transients on the line protected
+ and its adjacent lines.
+ The scheme can classify transients –including faults- occurring on a protected
+ line, categorize transients on adjacent lines and pinpoint the line causing
+ the transient event.
+ It is shown that the feature vector of the event can be determined from
+ a subset of local currents without using any voltages altogether.
+ The subset of local currents consists of the two aerial modes of the local
+ current.
+ Modal transformation is used to transform phase currents to modal quantities.
+ Discrete Wavelet Transform (DWT) is used to extract high frequency components
+ of the two aerial modal currents.
+ A feature vector is built using the wavelets details coefficients of one
+ level of the aerial modes and used to train a neural network.
+ Results show that the classes corresponding to each transient event type
+ on the protected line and its adjacent lines are almost linearly separable
+ from each other.
+ Results demonstrate that very accurate classification within one eighth
+ of a cycle is possible.
+\end_layout
+
+\begin_layout Keywords
+Transmission Line Relaying, Wavelets Transform, Modal Analysis, Artificial
+ Neural Networks, Power System Faults, Line Switching, Lightning Strike,
+ Current Transformers
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+The 
+\series bold
+
+\backslash
+IEEEPARstart
+\series default
+ command is needed in the first paragraph of the document.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+IEEEPARstart{
+\end_layout
+
+\end_inset
+
+P
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}{
+\end_layout
+
+\end_inset
+
+rotection
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ of a transmission line involves installing relays at both ends of the line
+ that constantly monitor voltages and currents and act when a fault occurs
+ on a line.
+ Traditional protection uses phasor estimation to estimate the fundamental
+ component of voltages and currents and take a decision when certain criteria
+ corresponding to certain fault conditions are met.
+ Distance protection is the most widely used method for transmission line
+ protection.
+ Modern numerical distance relays make use of low pass and antialiasing
+ filters - to reject high frequency content and apply Nyquist sampling theorem-
+ and special DSP hardware to perform sophisticated math functions 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Phadke2009"
+
+\end_inset
+
+.
+ CVTs are generally used to measure the voltages making them available to
+ the relay.
+ It is known that due to the interaction between the capacitive voltage
+ divider and the transformer inductance, oscillations are imposed on the
+ fundamental frequency measured 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Kojovic1994"
+
+\end_inset
+
+.
+ This puts more stringent requirement on the filters used in the relay.
+ Additionally, distance relay can only protect up to 85% of the line instantaneo
+usly 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "4113471"
+
+\end_inset
+
+.
+ This necessitates the use of a communication link between the relays at
+ the two ends of the line to achieve fast tripping from both ends.
+ With relays connected to substation LANs, a communication link between
+ relays is a cyber-threat.
+ With all limitations mentioned above, a new relaying principle is needed.
+ This principle has to be using currents only, fast, and finally does not
+ need any communication link for its operation.
+ Such a principle is provided and theoretically tested in this paper.
+ 
+\end_layout
+
+\begin_layout Standard
+Except for traveling wave fault location techniques that are still not very
+ popular with relay manufacturers 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "schweitzer2014locating"
+
+\end_inset
+
+, little is done with the high frequency components of the transients even
+ though it has been known that high frequency components of faults and transient
+ events contain rich information 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Santoso1996"
+
+\end_inset
+
+.
+ This is mainly because the traditional mathematical method at hand was
+ Fast Fourier Transform 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Lyons1997"
+
+\end_inset
+
+.
+ FFT transform requires the signal be stationary in the wide sense for the
+ calculation of coefficients to be accurate, i.e.
+ the signal can’t have any temporal variations for the calculation of coefficien
+ts to be correct and accurate.
+ Short Window Fourier Transform 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "oppenheim1989discrete"
+
+\end_inset
+
+ can solve some of the problems with FFT but it introduces other issues.
+ However most signals encountered in power systems are not stationary but
+ have their characteristics change with time.
+ 
+\end_layout
+
+\begin_layout Standard
+Multiresolution analysis (MRA) is a signal processing tool that has been
+ introduced in the nineties 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Mallat1989"
+
+\end_inset
+
+ to solve some of the problems inherent in Fourier transform analysis methods.
+ Wavelets
+\begin_inset CommandInset citation
+LatexCommand citep
+key "daubechies1990wavelet"
+
+\end_inset
+
+ are usually used along with MRA to solve this very exact problem.
+ Wavelets have a strong localization property that enables studying changes
+ not only in time but also in frequency feasible.
+ It is known from the uncertainty principle 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Boggess2009"
+
+\end_inset
+
+ that if the signal spans a small portion of the time domain then its Fourier
+ Transform will span a large portion of frequency domain.
+ DWT on the other hand does not suffer from such a limitation.
+ On the contrary, the signal is approximated at various levels –frequency
+ bands- and changes in time manifest themselves at the coefficients of the
+ wavelets only around the time which the event occurred.
+ Such property makes it ideal to detect disturbances and study power system
+ transients 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "wilkinson1996discrete"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+With the advent of wavelets, the power system community has seen a surge
+ in application of wavelets based methods for various power system problems
+ notably in the area of power system protection- mainly in transient based
+ protection schemes, transients’ classification and fault location.
+ The localization property of wavelets makes it very convenient in locating
+ faults 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Magnago1998"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+The use of ANN for fault classification and detection has been given in
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Dalstein1995,Kezunovic1995,oleskovicz2001complete"
+
+\end_inset
+
+ where voltage and current samples are fed directly to the ANN for fault
+ detection and classification on the protected line.
+ In 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kezunovic1995"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Dalstein1995"
+
+\end_inset
+
+ samples of voltages and currents are used as a feature vector to train
+ ANN.
+ With the advent of wavelets, special wavelets transforms are applied to
+ voltage and current waveforms before they are fed to the ANN for training.
+ In 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Silva2006"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Mao2001"
+
+\end_inset
+
+, DWT is applied to voltages and currents but instead of feeding the details
+ coefficients to the ANN, entropy (energy) of the signal is captured and
+ fed instead to the ANN to make fault type classification between faults
+ on the same transmission line.
+ In 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Martin2003"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Zwe-Lee2004"
+
+\end_inset
+
+, DWT is applied to voltage and current signals at a relay location resulting
+ in series of details coefficients that are fed to the ANN for fault detection
+ and type classification.
+ In 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "perera2011recognition"
+
+\end_inset
+
+ the energy of certain current levels and approximations is used to train
+ a probabilistic classifier, and using this energy feature a decision is
+ made whether a transient signal if due to a fault or non-fault condition
+ on a line.
+ A detailed look at literature reveals that very few attempts have been
+ done to harness the power of the wavelets details coefficients alone and
+ understand their underlying structure.
+ Moreover, existing classification techniques as the ones in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Zwe-Lee2004"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "perera2011recognition"
+
+\end_inset
+
+ do not take transients on adjacent lines into account which could mislead
+ these schemes.
+ Additionally, symmetrical line configuration has been universally assumed
+ which is a configuration nearly nonexistent in real power systems.
+ 
+\end_layout
+
+\begin_layout Standard
+In this paper, the wavelets details coefficients are directly used to train
+ the ANN without using any entropy based method.
+ This paper proposes a novel application for wavelet based ANN.
+ It is shown that using the details coefficients of a subset local currents
+ only, distinction can be made between fault and non-fault conditions on
+ a protected transmission line without using any voltage signals at all.
+ The algorithm proposed can also distinguish between faults on the protected
+ line and faults on adjacent lines.
+ The algorithm provided can not only tell the difference between forward
+ and reverse faults but also can determine which adjacent line is faulted.
+ It is also shown that the same apply for lightning strikes and line switching
+ cases, i.e., the algorithm can tell which line is causing which transient
+ event.
+ Just as FFT produces coefficients that correspond to certain frequencies,
+ wavelets details also give information regarding the oscillatory components
+ of the signal localizing them in time.
+ In this regard, DWT is used to extract useful oscillatory information about
+ the signal.
+ Oscillatory information is manifested in the wavelets details coefficients
+ at various levels.
+ It is shown that any transient event on a specific transmission line causes
+ currents to oscillate in a unique way and these oscillations can be detected
+ in the wavelets details coefficients themselves at various levels.
+ The use of these wavelets details coefficients show the possibility of
+ building ultra-high speed relays.
+ 
+\end_layout
+
+\begin_layout Standard
+The paper is organized as follows: The solution methodology is given in
+ part 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Solution-methodology"
+
+\end_inset
+
+.
+ Simulation platform which consists of a description of EMTP model and the
+ creation of transients’ cases for ANN training is described in part 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Simulation-Platform"
+
+\end_inset
+
+.
+ The structure of the feature vector is given in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Building-of-Feature"
+
+\end_inset
+
+.
+ Simulation results are presented in part 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Results"
+
+\end_inset
+
+.
+ Conclusions and future research are provided at the end of the paper.
+\end_layout
+
+\begin_layout Section
+Solution methodology
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Solution-methodology"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this paper it is argued and shown that the oscillatory information present
+ in the transient signal captured at a single relay location caused by sudden
+ network topology changes contains sufficient information for classification
+ not only between transients on the same line but also between transients
+ on adjacent lines.
+ Any change of configuration on the line causes a traveling wave to be generated
+ traveling from the point of change towards the ends of the line.
+ In the simplest case this wave will be just a pulse- a step- but in reality
+ will be accompanied by high frequency oscillating components.
+ Fourier analysis is not suitable for analyzing such waveforms because those
+ oscillations will be distorted and attenuated as they arrive at the line
+ terminals.
+ However, applying DWT will enable us to see both the spectral and temporal
+ variations of those high frequency oscillations.
+ 
+\end_layout
+
+\begin_layout Standard
+Historical treatment of traveling waves - as used in the ladder diagram
+ for example- treat them as if they were pulses traveling down the line
+ with no regard to the oscillatory components they carry.
+ A certain mathematical entity -which is the feature vector to be defined
+ in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Building-of-Feature"
+
+\end_inset
+
+- is derived from the oscillatory components and called the the transient
+ signature of the event.
+ The transients that are studied in this paper are lightning, line switching
+ and faults.
+ At a certain terminal of the line which is typically a relay location,
+ it is argued and shown that those signatures are unique to the event that
+ originated them and to the line which initiated those events.
+ This means that using this oscillatory information of the event, the line
+ causing it can be determined.
+ Those signatures are a function of the line parameters, the network topology
+ and the instance of the event and of course the type of the event.
+ In essence, the signature of the fault occurring on a certain line will
+ be different form the signature of the fault on adjacent lines.
+ Also, line switching will cause the currents to oscillate in a manner that
+ is different from faults and lightning striking the same line and those
+ oscillatory components are different for different lines as well.
+\end_layout
+
+\begin_layout Standard
+It is argued that the aggregate of all transient signatures caused by a
+ certain transient event –switching or faults for example- originating from
+ a certain line occupies a specific subspace in the n-dimensional space.
+ This subspace is almost linearly separable 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Zurada1992"
+
+\end_inset
+
+ from all other subspaces generated by other transient events by adjacent
+ lines.
+ The n-dimensional space is the space spanned by all n-dimensional feature
+ vectors used to train the ANN.
+ A relay that is programmed to use these wavelets details not only can detect
+ and classify transients on a protected line but also can detect faults
+ and classify transients on adjacent lines.
+ ANN classification is used to show that this is indeed the case.
+ Static feedforward ANN is a tool used to map a vector from the n-dimensional
+ space to another m-dimensional space.
+ In the case in hand, the feature vector is mapped which is n-dimensional
+ space to another space.
+ These spaces will be described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Results"
+
+\end_inset
+
+ but for now if this mapping is successful then the original n-dimensional
+ subspaces are linearly separable as explained in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Zurada1992"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Information is extracted from the high frequency components using DWT at
+ various levels.
+ Before DWT is applied, phase currents are decoupled from each other using
+ modal analysis 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Hedman1965,Hedman1965b"
+
+\end_inset
+
+.
+ Modal transformation will decouple current waveforms thus eliminating mutual
+ coupling and untransposed line effects.
+ The modal matrix will be explained in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Building-of-Feature"
+
+\end_inset
+
+.
+ It is known that CVT introduces transients to the measured voltage signal.
+ It is shown in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "hou1996capacitive"
+
+\end_inset
+
+ that a typical CVT with active ferroresonance suppression circuit is a
+ low pass filter with a cut off frequency around 1 kHz which drops to almost
+ 200 Hz when passive ferroresonance suppression circuit is employed.
+ On the other hand classification with currents is preferable because the
+ cut off frequency of current transformers is much larger than the potential
+ transformer or CVT.
+ The useful passband of current transformers is typically 100 kHz 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "lee1994development"
+
+\end_inset
+
+ and in some cases can go up to 400 kHz 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Douglass1981a"
+
+\end_inset
+
+ or 500 kHz 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "redfern2003laboratory"
+
+\end_inset
+
+.
+ Since a conservative stance is chosen, the sampling rate is selected such
+ that the maximum frequency available in the signal is 100 kHz to attain
+ the 100 kHz passband of current transformers.
+ The time step used in the EMTP simulations is 1
+\begin_inset Formula $\mu s$
+\end_inset
+
+ which should theoretically give a maximum frequency of 500 kHz in sampled
+ output according to Nyquist theory.
+ However, it is given in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Siqueira2015"
+
+\end_inset
+
+ that the maximum frequency in the EMTP simulations is only one fifth of
+ that, so the maximum frequency is 100 kHz.
+\end_layout
+
+\begin_layout Standard
+After decoupling phase quantities, DWT is applied to the currents modes
+ to convert the signals to a series of coefficients that will be used for
+ training of the neural networks.
+ The event is detected once a change of level 3 -or any level depending
+ on which level is used- coefficients is detected.
+ This detection is simply because the pre-event data is assumed steady state
+ so no high frequency components exist in the pre-event data.
+ Once the event is detected, a window of one eighth of a cycle of post event
+ information is used for neural network training.
+ Simulations show that at least one eighth of a cycle has to be used for
+ correct classification.
+ Numerous trials have shown that at least one eighth of a cycle of post-event
+ information has to be present for correct classification or classification
+ fails completely.
+ 
+\end_layout
+
+\begin_layout Standard
+The outcome of the DWT is a series of coefficients for each mode and for
+ each level.
+ The coefficients of one level of the two aerial modes of currents are stacked
+ on top of each other to build one feature vector that will be used to train
+ the network.
+ Building the training vector will be explained in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Building-of-Feature"
+
+\end_inset
+
+.
+ A neural network of an appropriate size is then selected for classification.
+ The choice of the size of network is reached at by trial and error and
+ no universal size has been applied to all classification problems.
+ That is the size of the network is changed till the required classification
+ accuracy is achieved.
+ Once the size of ANN is selected, the ANN is then trained using various
+ scenarios for transients on lines.
+ It is shown that using only two modes of local current information at one
+ end of the line- corresponding to a relay- distinction can be made between
+ various transient events on different lines.
+ It is argued and shown that the feature vector built has sufficient information
+ to distinguish between a fault and non-fault condition on a protected transmiss
+ion line.
+ It is also shown that the adjacent line causing certain transient events
+ can be determined.
+ This means using local information we can see what is happening on adjacent
+ lines.
+\end_layout
+
+\begin_layout Standard
+In summary, the procedure is as follows: 
+\end_layout
+
+\begin_layout Enumerate
+Decouple currents using modal analysis.
+\end_layout
+
+\begin_layout Enumerate
+Apply DWT to the aerial modes using one eighth of a cycle of post event
+ currents.
+\end_layout
+
+\begin_layout Enumerate
+Stack the series of coefficients of the two aerial modes of a certain level
+ on top of each other to create a vector used to train ANN.
+\end_layout
+
+\begin_layout Enumerate
+A neural network of appropriate size is used for training.
+ Training is done using transient scenarios.
+ Those scenarios include: faults, line switching and lightning.
+\end_layout
+
+\begin_layout Section
+Simulation Platform
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Simulation-Platform"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this section, the ATP/EMTP model is presented in subsection 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:EMTP-Model"
+
+\end_inset
+
+ while in subsection 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Creation-Of-Transient"
+
+\end_inset
+
+ creation of the transient cases for the training, validation and testing
+ of ANN is fully described.
+ 
+\end_layout
+
+\begin_layout Subsection
+EMTP Model
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:EMTP-Model"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A snapshot of the area under study taken from ATPDraw is shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:fig.1"
+
+\end_inset
+
+.
+ The IEEE 118 bus is used 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "WashStatUni"
+
+\end_inset
+
+ as a test system.
+ All data is taken from 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "WashStatUni"
+
+\end_inset
+
+ except for machine data and the lines in the area under study.
+ The dyanmic data of IEEE 118 bus system is taken from 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "7151773"
+
+\end_inset
+
+.
+ The line under study is the line connecting buses 23 and 25 (line 23-25).
+ The selection of this is arbitrary but this specific line was attractive
+ to the simulations for the reasons that follow.
+ Line 23-25 is bordered by three lines connected to bus 23 namely: line
+ 23-22, line 23-32 and line 23-24.
+ Line 23-25 is also connected to line 26-30 via a transformer connecting
+ buses 25 and 26.
+ Line 23-25 is also connected to line 25-27 via bus 27.
+ A synchronous generator is connected to bus 25 via step up transformer.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Capture2.PNG
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Portion of the system under study
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:fig.1"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+All power transformers have been modeled using ATP Hybrid Transformer Model
+ according to 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "cho2002parameter"
+
+\end_inset
+
+ with typical parameters provided by ATPDraw.
+ Initial high frequency components are measured well before CT saturation
+ occurs 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Perera2008"
+
+\end_inset
+
+ and since one eighth only of post-fault data is used, the results of 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Perera2008"
+
+\end_inset
+
+ apply very well, i.e, no need to model CT saturation effects.
+ Synchronous machines are modeled using ATP SM-59 except for excitation
+ and governor controls.
+ This is because only one eighth of a cycle of post event data is used which
+ is a period much shorter than modern exciter and governor time constants.
+ 
+\end_layout
+
+\begin_layout Standard
+In the simulations that follows, very general tower configurations are used
+ for the line under study and its adjacent lines.
+ The line connecting buses 23 and 25 is given in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "gashimov2009transmission"
+
+\end_inset
+
+.
+ The tower configurations for the lines bordering lines 23-25 are taken
+ from 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "ALSTOM2002"
+
+\end_inset
+
+.
+ All towers are scanned in inserted in the paper for convenience of reader
+ in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig2"
+
+\end_inset
+
+.
+ All lines in the study area have been modeled as lines with frequency dependent
+ parameters with ground return.
+ All other lines have been modeled as symmetrical (fully transposed) lines
+ with frequency dependent parameters with no ground wire.
+ 
+\end_layout
+
+\begin_layout Standard
+Current measurement devices are located at terminals 23 and 25.
+ It should be pointed out as well that no attempt has made to model current
+ transformers because the maximum frequency available in the simulated signals
+ is 100 kHz which is typically less than the useful passband of the CT as
+ given in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "lee1994development,Douglass1981a,redfern2003laboratory"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+It should be pointed out that a surge arrester has been also used in the
+ simulations.
+ The tool in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "jonathanwoodworth2014"
+
+\end_inset
+
+ is used to select the characteristic of our surge arrester.
+ Bus capacitance and transformer stray capacitance have also been accounted
+ for with values given in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "greenwood1991electrical"
+
+\end_inset
+
+ which are extremely important in high frequency transient studies.
+ 
+\begin_inset Float figure
+placement p
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Towers.tiff
+	scale 35
+	clip
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tower Configurations of lines of the area under study 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig2"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Creation Of Transient Cases And Preparation Of Cases For Training Of ANN
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Creation-Of-Transient"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The argument in the paper is that high frequency components of the currents
+ measured at a local relay not only can detect fault and no faults condition
+ on a protected line but also can detect fault and no fault condition on
+ adjacent lines.
+ A large number of simulations had to be carried out to prove this argument.
+ A very general network topology with different tower configurations is
+ present.
+ 
+\end_layout
+
+\begin_layout Standard
+Creation of fault cases, lightning strike cases and line switching cases
+ has been automated.
+ A toolbox that automatically creates transient cases is released in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "7335090"
+
+\end_inset
+
+.
+ Creation of fault cases is first described then line switching cases and
+ after that the lightning strike cases.
+ At this point it should be emphasized that the line under study and that
+ is to be protected is line 23-25 which is bordered by 4 adjacent lines
+ namely line 23-22, line 23-32, line 23-24, line 25-27.
+ 
+\end_layout
+
+\begin_layout Standard
+No attempt is made to answer how far the local currents can be used to classify
+ transients on the lines that are beyond the lines directly connected to
+ the line under study.
+ For this reason, ANN is trained for the line under study and the five circuits
+ directly surrounding it only.
+ The next paragraphs describe creation of transient cases for faults, line
+ switching and lightning and creation of feature vector for training.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Creation of Fault Cases
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Creation-of-Fault"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Fault cases are created in batches; a batch for each line.
+ Each batch has fault parameters, these parameters are the following: incipient
+ angle, fault resistance, fault location and fault type.
+ All types of faults have been created i.e., AG, BG, CG, AB, BC, CA, ABG,
+ CBG, ACG, ABC, ABCG.
+ Incipient angles are from 0 to 350 degrees in 10 degrees increments.
+ Fault resistance assumes the values: 0, 20
+\begin_inset Formula $\Omega$
+\end_inset
+
+, 100
+\begin_inset Formula $\Omega$
+\end_inset
+
+ and 1000
+\begin_inset Formula $\Omega$
+\end_inset
+
+.
+ The distance take the following values: 5%, 15%, 35%, 50%, 65%, 80% and
+ 95% which are all percentages of total line length.
+ Simulations are created for line 23-25 and it adjacent lines.
+ 
+\end_layout
+
+\begin_layout Standard
+A total of 8066 cases per batch have been created which gives a total of
+ 48396 cases because line 25-27 is double circuit line, i.e., two batches
+ of faults for line 25-27 have been created: one for each circuit.
+ Fault arc although simulated but was not taken into account during training.
+ This is because fault arc causes, if any, very little distortion to phase
+ currents which is consistent with the results in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "perera2011recognition"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Dalstein1995"
+
+\end_inset
+
+.
+ The previous statement has been validated using the fault arc model given
+ in 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Terzija2004"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Creation of Line Switching Cases
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Creation-of-Line switching cases"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For line switching cases, a batch for each line has been creating giving
+ a total of 6 batches.
+ Each batch consists of smaller batches; each of the smaller batches corresponds
+ to switching by one of the circuits breakers at each terminal.
+ For example, line 23-22 would have a smaller batch for switching using
+ the breaker installed on terminal 23 and another smaller batch for switching
+ using the breaker on terminal 22.
+ The variable in switching cases is the moment of switching.
+ Switching times ranges from 0 to 360 degrees in 2 degrees increment.
+ This way 360 cases per batch have been created, giving a total of 2160
+ cases.
+\end_layout
+
+\begin_layout Subsubsection
+Creation of Lightning Strike Cases
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Creation-of-Lightning cases"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For lightning strike cases a batch of each line has been again created.
+ An ATP Heidler type lightning source with rising time equal to 4 
+\begin_inset Formula $\mu s$
+\end_inset
+
+ and a 
+\begin_inset Formula $\tau$
+\end_inset
+
+ equal to 10 
+\begin_inset Formula $\mu s$
+\end_inset
+
+.
+ The rising and tailing times are kept constant during simulations but amplitude
+s have been varied which were set to 5 kA, 10 kA, 15KA, 20 kA and 30 kA.
+ Striking distances were the same as the ones used for fault batches: 5%,
+ 15%, 35%, 50%, 65%, 80% and 95% which are all percentages of total line
+ length.
+ The incipient angle was 0, 90,180, 270 and 330 degrees.
+ This amounts to 630 cases per batch giving a total of 3780 cases.
+ 
+\end_layout
+
+\begin_layout Section
+Building of Feature Vector of Transient Signature
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Building-of-Feature"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+After batches have been created, a special subroutine is used to translate
+ the phase quantities to modal quantities.
+ The phase quantities are decoupled using the modal matrix calculated at
+ 10 kHz even though the matrix is frequency dependent.
+ Different modal frequencies for the modal matrix have been tried but this
+ did not affect the classification results at all.
+ The two aerial modes are the only ones used for training.
+ The modal matrix with real entries is given in equation (1).
+ The signs of the entries are only shown to emphasize their physical meaning
+\begin_inset Formula 
+\begin{equation}
+\begin{pmatrix}Mode1\\
+Mode2\\
+Mode3
+\end{pmatrix}=\begin{pmatrix}+ & + & +\\
+- & + & +\\
++ & + & -
+\end{pmatrix}\times\begin{pmatrix}Ia\\
+Ib\\
+Ic
+\end{pmatrix}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It should be apparent that Mode1 is the weighted sum of all phase currents
+ which is nothing other than the ground mode current.
+ This ground mode current is known to be very well dependent on the frequency
+ and ground resistance 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Ametani2013"
+
+\end_inset
+
+.
+ This is the main reason that this current mode has not been used for building
+ the feature vector for training.
+ 
+\end_layout
+
+\begin_layout Standard
+Once the modal quantities are available, we run DWT with db4 for 4 levels,
+ starting from level 1 to level 4.
+ Db4 has been used since it has produced good results with previous literature.
+ The outcome of DWT is a series of coefficients for each level and for each
+ mode.
+ Since the first one eighth of a cycle following the transient event is
+ only sought, the details coefficients corresponding to that period are
+ only obtained.
+ Two modes out of the three modes are only used.
+ The details coefficients of one level of Mode2 and Mode3 are stacked on
+ top of each other.
+ It should be emphasized that building the n-dimensional vector this way
+ does not change the temporal content of the feature vector, as long as
+ all other n-dimensional vectors are built consistently this way, i.e., the
+ order of the modes in the feature vector has to be preserved and the vector
+ has to be built using one level only.
+ If the order of modes in the feature vector is changed this amounts to
+ a rotation of n-dimensional space but should not change the results of
+ classification, again as long as all vectors are built consistently.
+ 
+\end_layout
+
+\begin_layout Standard
+At this point one should note that the application uses only two thirds
+ of modes of the currents as contrasted to other applications that use all
+ phase voltage and current waveforms for ANN training 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Martin2003"
+
+\end_inset
+
+ which amounts to drastic reduction in computational power needed for ANN.
+ 
+\end_layout
+
+\begin_layout Standard
+Having created n-dimensional vectors, the input for the ANN is ready.
+ Training of the neural network is then started.
+ The cases are randomly divided into the following categories: 70% of all
+ cases for training, 15% for validation and another 15% for testing.
+ Results are discussed in the following section.
+\end_layout
+
+\begin_layout Section
+Results
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Results"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This section presents the results of the classification.
+ In section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:LINE-IDENTIFICATION-IN faults"
+
+\end_inset
+
+, the results of classification in case all events were faults are shown.
+ In section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Line-Identification-in lightning "
+
+\end_inset
+
+ classification output in case of all events were lighting strikes is shown.
+ In section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Line-Identification-in switching"
+
+\end_inset
+
+ results in case events were all line switching are presented.
+ Finally, event type classification is provided in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Transient-Event-Type"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+In section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Solution-methodology"
+
+\end_inset
+
+, the mapping from n-dimensional space to the m-dimensional space has not
+ been discussed.
+ The dimension of the n-dimensional space is fixed by the length of the
+ feature vector while the dimension of the m-dimensional space is different
+ depending on which space we want to map the n-dimensional space to.
+ In sections 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:LINE-IDENTIFICATION-IN faults"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Line-Identification-in switching"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Line-Identification-in lightning "
+
+\end_inset
+
+ below, the events are being mapped to the lines causing them which amounts
+ to a mapping from the n-dimensional space to a 6-dimesnioal space (one
+ dimension per line, line 25-27 counted twice for the double circuit).
+ In section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Transient-Event-Type"
+
+\end_inset
+
+, all events are being mapped to an event-type space which is a mapping
+ from n-dimensional space to a 3-dimsnsional space (faults, lightning and
+ switching).
+ It should be apparent that the dimension of the feature space (n-dimensional
+ space) depends on the DWT level used.
+ It should be obvious as well that this dimension is halved as we go one
+ level higher, i.e., the dimension of the n-dimensional space using level
+ 1 is double the dimension of level 2 n-dimensional.
+ For the sampling frequency used in this paper, the dimension of the n-dimension
+al space is one hundred and sixty eight (168) if level 4 is used to build
+ the feature vector, i.e, each modal current has 84 coefficients.
+ 
+\end_layout
+
+\begin_layout Subsection
+LINE IDENTIFICATION IN CASE OF FAULTS 
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:LINE-IDENTIFICATION-IN faults"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This section provides the results for classification in case of faults only,
+ i.e.
+ if all transient events are faults only how accurate can the method identify
+ the faulted line.
+ 
+\end_layout
+
+\begin_layout Standard
+First, six batches of faults are created as described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Creation-of-Fault"
+
+\end_inset
+
+.
+ Creating the feature vector using currents from terminal 23 as described
+ before using any levels from 1 to 4 to train ANN gives the classification
+ accuracy in table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "table1"
+
+\end_inset
+
+.
+ One immediately sees that classification accuracy for the double circuits
+ of line 25-27 fails.
+ This is to be expected if the reader consults 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig2"
+
+\end_inset
+
+ for the tower configuration which shows that from the Thevenin’s point
+ of view at the terminal 23 or 25 of the line under study, the same fault
+ case on any circuit will produce the same response due to the symmetry
+ of the tower 25-27.
+ It should be pointed out that the faults on one of the circuits of line
+ 25-27 are confused for faults on the other circuit and vice versa but not
+ with other lines.
+ The percentage accuracy does not change if the currents at terminal 25
+ are used instead.
+ Training with levels 1, 2, 3 and 4 gives the same classification accuracy
+ but the difference is mainly in the ANN size needed.
+ For reproducibility purposes, an ANN of size 40 in the hidden layer is
+ needed to achieve the results in table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "table1"
+
+\end_inset
+
+ for level 3.
+ Lower levels (levels corresponding to higher frequencies) needed less neurons
+ but the feature vector becomes so long (corresponding to more detailed
+ time resolution).
+ This in turn demands for a high super computer which has been undertaken
+ for level 1 (frequency band from 100 kHz to 50 kHz) and level 2 (50 kHz
+ to 25 kHz).
+ Level 3 (25 kHz to 12.5 kHz) and level 4 (12.5 kHz to 6.25 kHz) can be done
+ on a PC such as the one the author used with Core i7, 3.2 GHz speed, 4 cores
+ and 8 GB of RAM.
+ If the double circuit tower 25-27 is considered to be one line, a 100%
+ correct classification is achieved for faults.
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Faults Classification Accuracy - Numbers are Percentages.
+\begin_inset CommandInset label
+LatexCommand label
+name "table1"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line Under Study
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-24
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Circuit (1) Line 25-27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+46
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Circuit (2) Line 25-27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+54
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Line Identification in Case of Switching
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Line-Identification-in switching"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This section shows the results of classification if all transients are for
+ line switching.
+ Creating the switching events as described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Creation-of-Line switching cases"
+
+\end_inset
+
+ and using either end currents, the accuracy in table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "table2"
+
+\end_inset
+
+ is achieved.
+ Training with any level from 1 to 4 gives the same classification result,
+ but the only difference is being the size of the hidden layer.
+ Level 3 required 30 neurons in the hidden layer with lower levels requiring
+ less neurons and higher levels requiring more neurons.
+ Once again switching events on one of the circuits of line 25-27 are confused
+ for the other circuit and vice versa .
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Switching Classification Accuracy - Numbers are Percentages
+\begin_inset CommandInset label
+LatexCommand label
+name "table2"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line Under Study
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-24
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Circuit (1) Line 25-27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+48
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Circuit (2) Line 25-27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+52
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Line Identification in Case of Lightning Strikes
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Line-Identification-in lightning "
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If all transient events are lightning only as described in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Creation-of-Lightning cases"
+
+\end_inset
+
+, then using any end data gives the results in table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "table3"
+
+\end_inset
+
+ irrespective of the terminal used or the level used ( levels 1 to 4).
+ Level 3 required 30 neurons in the hidden layer with lower levels requiring
+ less neurons and higher levels requiring more neurons.
+ One has to note that in table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "table2"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "table3"
+
+\end_inset
+
+, the algorithm can’t still distinguish between the events on any of the
+ circuits of line 25-27 due to the symmetry with respect to the line being
+ studied.
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Lightning Classification Accuracy - Numbers are Percentages
+\begin_inset CommandInset label
+LatexCommand label
+name "table3"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line Under Study
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-32
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-24
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Line 23-22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Circuit (1) Line 25-27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+49
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Circuit (2) Line 25-27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+51
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Transient Event Type Classification
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Transient-Event-Type"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lastly, the algorithm performance is shown when it comes to classification
+ between different transients types.
+ The types of studies in this paper are faults, line switching and lightning.
+ ANN is trained with all transient cases given in subsections 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Creation-of-Fault"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Creation-of-Line switching cases"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Creation-of-Lightning cases"
+
+\end_inset
+
+ above.
+ The output is shown in table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab4"
+
+\end_inset
+
+.
+ Once again levels 1 through 4 give the same classification accuracy whether
+ bus 23 or 25 is used.
+ The ANN used for table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab4"
+
+\end_inset
+
+ has a size of 30 when trained with level 3 currents.
+ It should be pointed out that in table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab4"
+
+\end_inset
+
+ most lightning strikes with amplitude 5000 Amp on line 23-22 have been
+ misclassified for faults.
+ A 5000 Amp lighting strike is unlikely in real world lightning strike cases.
+ If we remove all 5000 Amp strikes from training, a one hundred accurate
+ classification accuracy is achieved for event type classification.
+\end_layout
+
+\begin_layout Standard
+It is now a straightforward manner to construct a two layer feedforward
+ network that classify any event to fault, lightning or switching in the
+ first layer then identify the line causing the event in the second layer.
+ Alternatively, a relay can be programmed to classify the events into fault,
+ switching or lightning in table 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab4"
+
+\end_inset
+
+.
+ Once this is done, the same event can be applied to the ANN corresponding
+ to that event type.
+\begin_inset Float table
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Transient Event Type Classification Accuracy - Numbers are Percentages.
+\begin_inset CommandInset label
+LatexCommand label
+name "tab4"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Faults
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Lightning
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+97.2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Switching
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+99.8
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Conclusions and Future Research
+\end_layout
+
+\begin_layout Standard
+This paper presented an argument that high frequency signals can be used
+ for high speed power system fault detection via transient classification
+ identifying the line causing the transient event.
+ 
+\end_layout
+
+\begin_layout Standard
+The contributions of the paper are as follows: 
+\end_layout
+
+\begin_layout Enumerate
+It has been shown that currents alone can be used for transient signature
+ of the event.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Only two modes are necessary for classification.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Only one eighth of a cycle of post event data is necessary for classification.
+ 
+\end_layout
+
+\begin_layout Standard
+Although the results in this paper have been shown only to a specific tower,
+ the author has tried different tower configurations and confirmed that
+ the algorithm works for all tower configurations considered.
+ It should be clear that the current method fails if a lightning strike
+ evolves to a fault.
+ This drawback has been addressed separately in a different publication
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "AbdullahLightn16"
+
+\end_inset
+
+.
+ Additionally, detection of faults on mutually coupled lines has not been
+ addressed in this paper and will be treated in a different publication.
+\end_layout
+
+\begin_layout Standard
+One issue that has not been investigated in this paper is insulation breakdown.
+ The author has not assumed any failure of insulation in the simulations.
+ The cutting of the signal associated with insulation breakdown can potentially
+ mislead the scheme proposed.
+ Further investigations are needed to completely quantify its effect on
+ the proposed relaying scheme.
+ It should be noted, however, that lightning strikes are being chopped by
+ the surge arrester but still being correctly recognized.
+ 
+\end_layout
+
+\begin_layout Standard
+Field validation is being performed and results will be shared once all
+ investigations are done.
+\end_layout
+
+\begin_layout Section*
+Acknowledgment
+\end_layout
+
+\begin_layout Standard
+This paper could not have seen the light without the resources at Texas
+ A&M Supercomputing Facility.
+ The author would like to thank all at the facility for their help and support.
+ The author also would like to express his sincere thanks for Jonathan Woodworth
+ of ArresterWorks for his guidance regarding arrester selection.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "Dissertation_jab,Proposal_endNote"
+options "IEEEtran"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

@@ -1,0 +1,35 @@
+Reviewer 1 Comments
+
+Good work on the study cases but still need some figures or charts to strengthen the result.
+
+Reviewer 2 Comments
+
+The concept of the work is very relevant. Wavelet Transform gives a very clear picture of the time and the frequency information of the transients. But many things are not clear in the paper.
+
+1) What is the mother wavelet you are using and will a single type of mother wavelet be able to
+distinguish transients due to switching,lighting or faults?? 2) It is not clear as how you are using the coefficients to identify the type of faults?? please explain more.
+3) Detailed algorithm is required as it should be an online process of constant fault vigilance.
+
+4) Most important "RESULT SHOULD BE MORE DESCRIPTIVE"
+
+Reviewer 3 Comments
+
+Interesting paper that proposes a very accurate fault classification within only one eighth of a cycle. I'd like to see the detailed procedure in the full paper.
+
+Reviewer 4 Comments
+
+The paper is well written. On this paper results should be included to validate your proposal.
+
+Reviewer 5 Comments
+
+Generally, the method seems promising for fault identification. However, there are some issues that should be addressed in the full paper:
+
+    Citation needed for "distance relay can only protect up to 85% of the line instantaneously".
+
+    Criticism of communication-based relaying as bad because they might utilize the internet is a straw man argument---unless you have evidence that operators are using the internet to communicate between relays connected to the same transmission line.
+
+    How well does the method perform when the operating conditions (e.g., steady-state line flows) change? Would the ANN have to be retrained for each operating condition?
+
+    Are there a possibility for false positives due to intentional switching or load/gen variation?
+
+    How well does this method compare against prior published methods (e.g., those that use voltage as well as current measurements)?
